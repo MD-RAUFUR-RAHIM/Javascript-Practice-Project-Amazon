@@ -1,4 +1,4 @@
-import {cart,removeFromCart,decreaseFromQuantity,totalQuantity} from '../data/cart.js';
+import {cart,removeFromCart,decreaseFromQuantity,totalQuantity, totalCost} from '../data/cart.js';
 import { products } from '../data/products.js';
 import { formatCurrency } from './utils/money.js';
 let cartSummaryHTML = '';
@@ -96,7 +96,7 @@ paymentSummaryHTML = `<div class="payment-summary js-payment-summary">
 
         <div class="payment-summary-row">
           <div class="js-total-quantity">Items: ${totalQuantity()}</div>
-          <div class="payment-summary-money">$42.75</div>
+          <div class="payment-summary-money js-payment-summary-money"></div>
         </div>
 
         <div class="payment-summary-row">
@@ -129,48 +129,7 @@ paymentSummaryHTML = `<div class="payment-summary js-payment-summary">
 document.querySelector('.js-order-summary').innerHTML= cartSummaryHTML;
 document.querySelector('.js-payment-summary').innerHTML =paymentSummaryHTML;
 
-// document.querySelectorAll('.js-delete-link').forEach((link)=>{
-//   link.addEventListener('click',()=>{
 
-//     cart.forEach((cartItem)=>{
-//       const productId= cartItem.productId;
-//       let matchingProduct;
-//       products.forEach((product) => {
-      
-    
-//         if(product.quantity === 0){
-//           const productId =link.dataset.productId;
-//           removeFromCart(productId);
-//           const container= document.querySelector(
-//             `.js-cart-item-container-${productId}`);
-//           container.remove();
-//         }
-//         else{
-//           const productId =link.dataset.productId;
-//           decreaseFromQuantity(productId);
-//         }
-//   });
-//     });
-
-//     // if(product.quantity === 0){
-//     //   const productId =link.dataset.productId;
-//     //   removeFromCart(productId);
-//     //   const container= document.querySelector(
-//     //     `.js-cart-item-container-${productId}`);
-//     //   container.remove();
-//     // }
-//     // else{
-//     //   const productId =link.dataset.productId;
-//     //    removeFromQuantity(productId);
-
-//     // }
-//     // const productId =link.dataset.productId;
-//     // removeFromCart(productId);
-//     //   const container= document.querySelector(
-//     //     `.js-cart-item-container-${productId}`);
-//     //   container.remove();
-//   });
-// })
 document.querySelectorAll('.js-delete-link').forEach((link) => {
   link.addEventListener('click', () => {
     const productId = link.dataset.productId;
@@ -190,7 +149,17 @@ document.querySelectorAll('.js-delete-link').forEach((link) => {
       if (totalQuantityElement) {
         totalQuantityElement.textContent = `Items: ${totalQuantity()}`;
       }
-    }
+      const getElement = document.querySelector('.js-payment-summary-money');
+      if(getElement){
+        getElement.textContent = `Total Cost: $${totalCost(cart, products)}`;
+      }
+      }
   });
 });
+const getElement = document.querySelector('.js-payment-summary-money');
+  if(getElement){
+    getElement.textContent = `Total Cost: $${totalCost(cart, products)}`;
+  }
+
+  
 

@@ -1,3 +1,5 @@
+import { products } from "./products.js";
+
 export let cart= JSON.parse(localStorage.getItem('cart'));
 
 if(!cart){
@@ -53,64 +55,7 @@ export function addToCart(productId){
     saveToStorage();
   }
 
-// export function decreaseFromQuantity(){
-//   // if(cart.productId == productId && cart.quantity>0){
-//   //   let cartQuantity = 0;
-//   //   cart.quantity-=1;
-//   //   document.querySelector('.js-quantity-label')
-//   //   .innerHTML = cartQuantity;
-//   // }
-//   let cartQuantity = 0;
 
-//   cart.forEach((cartItem) => {
-//     cartQuantity = cartItem.quantity - 1;
-//   });
-
-//   document.querySelector('.js-quantity-label')
-//     .innerHTML = cartQuantity;
-// }
-
-// // Check if there's anything in local storage and parse it
-// export let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-
-// function saveToStorage() {
-//   localStorage.setItem('cart', JSON.stringify(cart));
-// }
-
-// export function addToCart(productId) {
-//   let matchingItem = cart.find((cartItem) => cartItem.productId === productId);
-
-//   if (matchingItem) {
-//     matchingItem.quantity += 1;
-//   } else {
-//     cart.push({
-//       productId: productId,
-//       quantity: 1,
-//     });
-//   }
-
-//   saveToStorage();
-// }
-
-// export function removeFromCart(productId) {
-//   const newCart = cart.filter((cartItem) => cartItem.productId !== productId);
-//   cart = newCart;
-//   saveToStorage();
-// }
-
-// export function updateCartQuantity() {
-//   let cartQuantity = 0;
-//   cart.forEach((cartItem) => {
-//     cartQuantity += cartItem.quantity;
-//   });
-//   document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-// }
-
-// export function clearCart() {
-//   cart = [];
-//   saveToStorage();
-// }
 
 export function decreaseFromQuantity(productId, cart) {
   const cartItem = cart.find((item) => item.productId === productId);
@@ -130,4 +75,21 @@ export function totalQuantity()
     totalQuantity= totalQuantity + cartItem.quantity;
   });
   return totalQuantity;
+}
+
+// 
+export function totalCost(cart, products) {
+  let totalItemCost = 0;
+
+  cart.forEach((cartItem) => {
+    const matchingProduct = products.find((product) => product.id === cartItem.productId);
+
+    if (matchingProduct) {
+      totalItemCost += (matchingProduct.priceCents * cartItem.quantity) / 100;
+    }
+  });
+
+  totalItemCost = totalItemCost.toFixed(2);
+
+  return totalItemCost;
 }
