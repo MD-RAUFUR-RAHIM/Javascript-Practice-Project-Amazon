@@ -1,4 +1,4 @@
-import {cart,removeFromCart} from '../data/cart.js';
+import {cart,removeFromCart,decreaseFromQuantity} from '../data/cart.js';
 import { products } from '../data/products.js';
 import { formatCurrency } from './utils/money.js';
 let cartSummaryHTML = '';
@@ -7,7 +7,7 @@ cart.forEach((cartItem)=>{
   const productId= cartItem.productId;
   let matchingProduct;
   products.forEach((product) => {
-    if(product.id ===productId){
+    if(product.id === productId){
       matchingProduct = product;
     }
   });
@@ -31,7 +31,7 @@ cart.forEach((cartItem)=>{
         </div>
         <div class="product-quantity">
           <span>
-            Quantity: <span class="quantity-label">${cartItem.quantity}</span>
+            Quantity: <span class="quantity-label js-quantity-label">${cartItem.quantity}</span>
           </span>
           <span class="update-quantity-link link-primary">
             Update
@@ -94,14 +94,64 @@ cart.forEach((cartItem)=>{
 
 document.querySelector('.js-order-summary').innerHTML= cartSummaryHTML;
 
-document.querySelectorAll('.js-delete-link').forEach((link)=>{
-  link.addEventListener('click',()=>{
+// document.querySelectorAll('.js-delete-link').forEach((link)=>{
+//   link.addEventListener('click',()=>{
+
+//     cart.forEach((cartItem)=>{
+//       const productId= cartItem.productId;
+//       let matchingProduct;
+//       products.forEach((product) => {
+      
     
-    const productId =link.dataset.productId;
-    removeFromCart(productId);
-    const container= document.querySelector(
-      `.js-cart-item-container-${productId}`);
-     container.remove();
+//         if(product.quantity === 0){
+//           const productId =link.dataset.productId;
+//           removeFromCart(productId);
+//           const container= document.querySelector(
+//             `.js-cart-item-container-${productId}`);
+//           container.remove();
+//         }
+//         else{
+//           const productId =link.dataset.productId;
+//           decreaseFromQuantity(productId);
+//         }
+//   });
+//     });
+
+//     // if(product.quantity === 0){
+//     //   const productId =link.dataset.productId;
+//     //   removeFromCart(productId);
+//     //   const container= document.querySelector(
+//     //     `.js-cart-item-container-${productId}`);
+//     //   container.remove();
+//     // }
+//     // else{
+//     //   const productId =link.dataset.productId;
+//     //    removeFromQuantity(productId);
+
+//     // }
+//     // const productId =link.dataset.productId;
+//     // removeFromCart(productId);
+//     //   const container= document.querySelector(
+//     //     `.js-cart-item-container-${productId}`);
+//     //   container.remove();
+//   });
+// })
+document.querySelectorAll('.js-delete-link').forEach((link) => {
+  link.addEventListener('click', () => {
+    const productId = link.dataset.productId;
+    const cartItem = cart.find((item) => item.productId === productId);
+
+    if (cartItem) {
+      if (cartItem.quantity === 0) {
+        removeFromCart(productId);
+        const container = document.querySelector(`.js-cart-item-container-${productId}`);
+        if (container) {
+          container.remove();
+        }
+      } else {
+        decreaseFromQuantity(productId, cart);
+      }
+    }
   });
-})
+});
 

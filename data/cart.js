@@ -53,6 +53,22 @@ export function addToCart(productId){
     saveToStorage();
   }
 
+// export function decreaseFromQuantity(){
+//   // if(cart.productId == productId && cart.quantity>0){
+//   //   let cartQuantity = 0;
+//   //   cart.quantity-=1;
+//   //   document.querySelector('.js-quantity-label')
+//   //   .innerHTML = cartQuantity;
+//   // }
+//   let cartQuantity = 0;
+
+//   cart.forEach((cartItem) => {
+//     cartQuantity = cartItem.quantity - 1;
+//   });
+
+//   document.querySelector('.js-quantity-label')
+//     .innerHTML = cartQuantity;
+// }
 
 // // Check if there's anything in local storage and parse it
 // export let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -95,3 +111,15 @@ export function addToCart(productId){
 //   cart = [];
 //   saveToStorage();
 // }
+
+export function decreaseFromQuantity(productId, cart) {
+  const cartItem = cart.find((item) => item.productId === productId);
+  let cartQuantity= 0;
+  if (cartItem && cartItem.quantity > 0) {
+    cartItem.quantity -= 1;
+    cartQuantity = cartItem.quantity;
+
+    // Update the quantity label in the HTML
+    document.querySelector('.js-quantity-label').innerHTML = cartQuantity;
+  }
+}
