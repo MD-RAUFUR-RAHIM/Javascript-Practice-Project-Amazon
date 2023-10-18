@@ -95,7 +95,7 @@ paymentSummaryHTML = `<div class="payment-summary js-payment-summary">
         </div>
 
         <div class="payment-summary-row">
-          <div>Items: ${totalQuantity()}</div>
+          <div class="js-total-quantity">Items: ${totalQuantity()}</div>
           <div class="payment-summary-money">$42.75</div>
         </div>
 
@@ -177,7 +177,7 @@ document.querySelectorAll('.js-delete-link').forEach((link) => {
     const cartItem = cart.find((item) => item.productId === productId);
 
     if (cartItem) {
-      if (cartItem.quantity === 0) {
+      if (cartItem.quantity === 1) {
         removeFromCart(productId);
         const container = document.querySelector(`.js-cart-item-container-${productId}`);
         if (container) {
@@ -185,6 +185,10 @@ document.querySelectorAll('.js-delete-link').forEach((link) => {
         }
       } else {
         decreaseFromQuantity(productId, cart);
+      }
+      const totalQuantityElement = document.querySelector('.js-total-quantity');
+      if (totalQuantityElement) {
+        totalQuantityElement.textContent = `Items: ${totalQuantity()}`;
       }
     }
   });
