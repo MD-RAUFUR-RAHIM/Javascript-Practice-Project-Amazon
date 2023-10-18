@@ -123,3 +123,11 @@ export function decreaseFromQuantity(productId, cart) {
     document.querySelector('.js-quantity-label').innerHTML = cartQuantity;
   }
 }
+export function totalQuantity()
+{
+  let totalQuantity= 0;
+  cart.forEach((cartItem)=>{
+    totalQuantity= totalQuantity + cartItem.quantity;
+  });
+  return totalQuantity;
+}
