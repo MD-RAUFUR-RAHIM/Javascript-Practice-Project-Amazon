@@ -93,3 +93,4 @@ export function totalCost(cart, products) {
 
   return totalItemCost;
 }
+
