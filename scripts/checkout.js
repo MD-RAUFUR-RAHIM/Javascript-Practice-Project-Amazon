@@ -1,4 +1,4 @@
-import {cart,removeFromCart,decreaseFromQuantity,totalQuantity, totalCost,calculateTotalShippingCost} from '../data/cart.js';
+import {cart,removeFromCart,decreaseFromQuantity,totalQuantity, totalCost,calculateTotalShippingCost,decreaseTotalShippingCost} from '../data/cart.js';
 import { products } from '../data/products.js';
 import { formatCurrency } from './utils/money.js';
 let cartSummaryHTML = '';
@@ -192,6 +192,7 @@ document.querySelectorAll('.js-delete-link').forEach((link) => {
     if (cartItem) {
       if (cartItem.quantity === 1) {
         removeFromCart(productId);
+        decreaseTotalShippingCost(productId, deliveryOptionInputs);
         const container = document.querySelector(`.js-cart-item-container-${productId}`);
         if (container) {
           container.remove();
@@ -233,7 +234,7 @@ deliveryOptionInputs.forEach((input) => {
 
     const paymentSummaryMoney = document.querySelector('.js-payment-summary-money-button');
     if (paymentSummaryMoney) {
-      paymentSummaryMoney.textContent = `$${calculateTotalCost(selectedDeliveryOptions)}`;
+      paymentSummaryMoney.textContent = `$${calculateTotalShippingCost(selectedDeliveryOptions)}`;
     }
   });
 });

@@ -1,6 +1,7 @@
 import { products } from "./products.js";
 
 export let cart= JSON.parse(localStorage.getItem('cart'));
+export let selectedDeliveryOptions = {};
 
 if(!cart){
   cart =[{
@@ -52,8 +53,50 @@ export function addToCart(productId){
       }
     });
     cart = newCart;
+    
     saveToStorage();
   }
+
+
+
+  // export function decreaseTotalShippingCost(productId, deliveryOptionInputs) {
+  //   const updatedSelectedDeliveryOptions = {};
+  
+  //   deliveryOptionInputs.forEach((input) => {
+  //     const currentProductId = input.getAttribute('data-product-id');
+  //     const selectedValue = input.value;
+  //     updatedSelectedDeliveryOptions[currentProductId] = selectedValue;
+  //   });
+  
+  //   delete updatedSelectedDeliveryOptions[productId];
+  //   const newShippingCost = calculateTotalShippingCost(updatedSelectedDeliveryOptions);
+  //   localStorage.setItem('selectedDeliveryOptions', JSON.stringify(selectedDeliveryOptions));
+  //   const paymentSummaryMoney = document.querySelector('.js-payment-summary-money-button');
+  //   if (paymentSummaryMoney) {
+  //     paymentSummaryMoney.textContent = `$${newShippingCost.toFixed(2)}`;
+  //   }
+  // }
+  export function decreaseTotalShippingCost(productId, deliveryOptionInputs) {
+    const updatedSelectedDeliveryOptions = {};
+  
+    deliveryOptionInputs.forEach((input) => {
+      const currentProductId = input.getAttribute('data-product-id');
+      const selectedValue = input.value;
+      updatedSelectedDeliveryOptions[currentProductId] = selectedValue;
+    });
+  
+    delete updatedSelectedDeliveryOptions[productId];
+    const newShippingCost = calculateTotalShippingCost(updatedSelectedDeliveryOptions);
+    localStorage.setItem('selectedDeliveryOptions', JSON.stringify(updatedSelectedDeliveryOptions)); // Use updatedSelectedDeliveryOptions here
+    const paymentSummaryMoney = document.querySelector('.js-payment-summary-money-button');
+    if (paymentSummaryMoney) {
+      paymentSummaryMoney.textContent = `$${newShippingCost.toFixed(2)}`;
+    }
+  }
+  
+  
+  
+  
 
 
 
@@ -112,4 +155,13 @@ export function calculateTotalShippingCost(deliveryOptions) {
     totalCost.toFixed(2);
   return totalCost;
 }
+// export function removeShippingCost(productId){
+//   const newDeliveryOptions = [];
+//   deliveryOptions.forEach((deliveryItems)=>{
+//     if(deliveryItems.productId !== productId){
+//       newDeliveryOptions.push(deliveryItems);
+//     }
+//   });
+//   deliveryOptions = newDeliveryOptions;
+// }
 
