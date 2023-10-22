@@ -93,4 +93,23 @@ export function totalCost(cart, products) {
 
   return totalItemCost;
 }
+export function calculateTotalShippingCost(deliveryOptions) {
+  let totalCost = 0;
+
+  for (const productId in deliveryOptions) {
+    const selectedValue = deliveryOptions[productId];
+    
+    // Calculate and add the cost of the selected delivery option for each product
+    if (selectedValue === "Free Shipping") {
+      // You can add specific logic for each delivery option if needed
+      totalCost += 0;
+    } else if (selectedValue === "$4.99") {
+      totalCost += 4.99;
+    } else if (selectedValue === "$9.99") {
+      totalCost += 9.99;
+    }
+  }
+    totalCost.toFixed(2);
+  return totalCost;
+}
 

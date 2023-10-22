@@ -1,4 +1,4 @@
-import {cart,removeFromCart,decreaseFromQuantity,totalQuantity, totalCost} from '../data/cart.js';
+import {cart,removeFromCart,decreaseFromQuantity,totalQuantity, totalCost,calculateTotalShippingCost} from '../data/cart.js';
 import { products } from '../data/products.js';
 import { formatCurrency } from './utils/money.js';
 let cartSummaryHTML = '';
@@ -95,7 +95,8 @@ else{
             <input type="radio" checked
               class="delivery-option-input"
               name="delivery-option-${matchingProduct.id}"
-              value="Free Shipping">
+              value="Free Shipping"
+              data-product-id="${matchingProduct.id}">
             <div>
               <div class="delivery-option-date">
                 Tuesday, June 21
@@ -109,7 +110,8 @@ else{
             <input type="radio"
               class="delivery-option-input"
               name="delivery-option-${matchingProduct.id}"
-              value="$4.99">
+              value="$4.99"
+              data-product-id="${matchingProduct.id}">
             <div>
               <div class="delivery-option-date">
                 Wednesday, June 15
@@ -123,7 +125,8 @@ else{
             <input type="radio"
               class="delivery-option-input"
               name="delivery-option-${matchingProduct.id}"
-              value="$9.99">
+              value="$9.99"
+              data-product-id="${matchingProduct.id}">
             <div>
               <div class="delivery-option-date">
                 Monday, June 13
@@ -149,7 +152,7 @@ else{
   
           <div class="payment-summary-row">
             <div>Shipping &amp; handling:</div>
-            <div class="payment-summary-money js-payment-summary-money-button">$40</div>
+            <div class="payment-summary-money js-payment-summary-money-button">$0.00</div>
           </div>
   
           <div class="payment-summary-row subtotal-row">
@@ -212,19 +215,60 @@ document.querySelectorAll('.js-delete-link').forEach((link) => {
     getElement.textContent = `Total Cost: $${totalCost(cart, products)}`;
   }
 
-  
-const deliveryOptionInputs = document.querySelectorAll(`input[name^="delivery-option-"]`);
 
-// Add change event listeners to each input
+
+const deliveryOptionInputs = document.querySelectorAll(`input[name^="delivery-option-"]`);
+const selectedDeliveryOptions = {};
+
+
+
 deliveryOptionInputs.forEach((input) => {
   input.addEventListener('change', () => {
     const selectedValue = input.value;
+    const productId = input.getAttribute('data-product-id');
+    selectedDeliveryOptions[productId] = selectedValue;
+
+    // Save the selectedDeliveryOptions in local storage
+    localStorage.setItem('selectedDeliveryOptions', JSON.stringify(selectedDeliveryOptions));
+
     const paymentSummaryMoney = document.querySelector('.js-payment-summary-money-button');
     if (paymentSummaryMoney) {
-      paymentSummaryMoney.innerHTML = selectedValue;
+      paymentSummaryMoney.textContent = `$${calculateTotalCost(selectedDeliveryOptions)}`;
     }
   });
 });
 
 
 
+window.addEventListener('load', () => {
+  const savedDeliveryOptions = JSON.parse(localStorage.getItem('selectedDeliveryOptions'));
+  if (savedDeliveryOptions) {
+    deliveryOptionInputs.forEach((input) => {
+      const productId = input.getAttribute('data-product-id');
+      const selectedValue = savedDeliveryOptions[productId];
+      if (selectedValue === input.value) {
+        input.checked = true;
+      }
+      selectedDeliveryOptions[productId] = selectedValue;
+      localStorage.setItem('selectedDeliveryOptions', JSON.stringify(selectedDeliveryOptions));
+      const paymentSummaryMoney = document.querySelector('.js-payment-summary-money-button');
+      if (paymentSummaryMoney) {
+        paymentSummaryMoney.textContent = `$${calculateTotalShippingCost(selectedDeliveryOptions)}`;
+      }
+    });
+  }
+
+  
+  deliveryOptionInputs.forEach((input) => {
+    input.addEventListener('change', () => {
+      const selectedValue = input.value;
+      const productId = input.getAttribute('data-product-id');
+      selectedDeliveryOptions[productId] = selectedValue;
+      localStorage.setItem('selectedDeliveryOptions', JSON.stringify(selectedDeliveryOptions));
+      const paymentSummaryMoney = document.querySelector('.js-payment-summary-money-button');
+      if (paymentSummaryMoney) {
+        paymentSummaryMoney.textContent = `$${calculateTotalShippingCost(selectedDeliveryOptions)}`;
+      }
+    });
+  });
+});
