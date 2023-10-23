@@ -182,8 +182,6 @@ else{
 document.querySelector('.js-order-summary').innerHTML= cartSummaryHTML;
 document.querySelector('.js-payment-summary').innerHTML =paymentSummaryHTML;
 
-
-
 document.querySelectorAll('.js-delete-link').forEach((link) => {
   link.addEventListener('click', () => {
     const productId = link.dataset.productId;
@@ -192,7 +190,13 @@ document.querySelectorAll('.js-delete-link').forEach((link) => {
     if (cartItem) {
       if (cartItem.quantity === 1) {
         removeFromCart(productId);
-        decreaseTotalShippingCost(productId, deliveryOptionInputs);
+        delete selectedDeliveryOptions[productId];
+        const newShippingCost = calculateTotalShippingCost(selectedDeliveryOptions);
+        const paymentSummaryMoney = document.querySelector('.js-payment-summary-money-button');
+        if (paymentSummaryMoney) {
+          paymentSummaryMoney.textContent = `$${newShippingCost.toFixed(2)}`;
+        }
+        
         const container = document.querySelector(`.js-cart-item-container-${productId}`);
         if (container) {
           container.remove();
@@ -200,18 +204,23 @@ document.querySelectorAll('.js-delete-link').forEach((link) => {
       } else {
         decreaseFromQuantity(productId, cart);
       }
+      
       const totalQuantityElement = document.querySelector('.js-total-quantity');
       if (totalQuantityElement) {
         totalQuantityElement.textContent = `Items: ${totalQuantity()}`;
       }
+      
       const getElement = document.querySelector('.js-payment-summary-money');
-      if(getElement){
+      if (getElement) {
         getElement.textContent = `Total Cost: $${totalCost(cart, products)}`;
       }
-      }
+    }
   });
 });
-  const getElement = document.querySelector('.js-payment-summary-money');
+
+
+
+const getElement = document.querySelector('.js-payment-summary-money');
   if(getElement){
     getElement.textContent = `Total Cost: $${totalCost(cart, products)}`;
   }
